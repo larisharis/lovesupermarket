@@ -1,0 +1,14 @@
+oauth2==1.5.211
+Whoosh==2.3.2
+django-tagging==0.3.1
+django-social-auth
+httplib2
+django-dajaxice
+django-dajax
+-e git+git://github.com/madisona/django-contact-form.git#egg=django-contact-form
+-e git+git://github.com/toastdriven/django-haystack.git#egg=django-haystack
+twitter
+south
+-e git+git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
+django-disqus
+django-dbtemplates

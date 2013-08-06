@@ -1,0 +1,31 @@
+{% load static %}
+<div class="well" style="padding: 8px 0;">
+{% block sidebar_content %}
+{% endblock sidebar_content %}
+
+<br>
+
+          {% include 'spotlight.html'%}
+<br>
+
+{% if user.is_authenticated %}
+<ul class="nav nav-list">
+          <li class="nav-header">Admin</li>
+          <li><a href="/logout"><i class="icon-user"></i> Logout</a></li>
+          <li><a href="{% url favorite %}"><i class="icon-star"></i> My Favorites</a></li>
+          <li><a href="/contact"><i class="icon-flag"></i> Contact</a></li>
+        </ul>
+<br>
+{% endif %}
+
+<ul class="nav nav-list">
+          <li class="nav-header">Follow Us</li>
+          <li>
+	<a href="http://twitter.com/{{site_twitter_id}}">
+	<i class="icon-twitter" src="{% get_static_prefix %}/img/icon-twitter.png"></i>
+           Twitter</a></li>
+          <li><a href="/feed/rss/latest"><i class="icon-rss"></i> RSS feed</a></li>
+</ul><br>
+       </div>
+
+<br>

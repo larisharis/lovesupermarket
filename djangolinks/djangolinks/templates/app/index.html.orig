@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+{% include 'app/sidebar.html' %}
+{% endblock %}
+
+
+{% block splash %}
+           {% if not request.user.is_authenticated %}
+ <div class="alert alert-info">
+          <h3>Join us today - it's free</h3>
+           <h3>No form filling ! You can use Twitter,Facebook,Google or even Github to <a href="/login">Login</a></h3>
+           <h4><a href="/submit">Submit</a> your links without login !</h4>
+</div>
+           {% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+
+<h2>Search Links</h2>
+<div class=" hero-unit">
+
+<form class="form-search" action="/search" method="get">
+
+<div style="width:250px;" class="input-prepend">
+<span class="add-on">
+	<i class="icon-search"></i>
+</span>
+<input class="span3" id="iconInput"  type="text" name="q">
+<span class="help-block">Here's some keywords</span>
+</div>
+
+
+
+<div style="width:250px;" class="input-prepend">
+<span class="add-on">
+	<i class="icon-tags"></i>
+</span>
+	<input class="span3" id="iconInput"  type="text" name="tags">
+<span class="help-block">Tags: python, forms ,admin</span>
+</div>
+
+
+
+
+<div style="width:140px;" class="input-prepend">
+
+
+	
+			<select name="free" class="span2">
+                <option selected>All</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+	
+<span class="help-block">Free: All, Yes, No</span>
+</div>
+
+<p><p>
+<button class="btn  info">&nbsp&nbsp   Search &nbsp&nbsp   </button>
+
+
+</form>
+<p><dd><strong>Keywords:  </strong><a href="/search/?q=jobs&tag=">jobs</a> - <a href="/search/?q=snippet&tag=">snippet</a> - <a href="/search/?q=app&tag=">app</a> </dd></p>
+<p><dd><strong>Tags:  </strong><a href="/tag/blog">blog<a/> - <a href="/tag/tutorial">tutorial</a> - <a href="/tag/company">company</a> </dd></p>
+</div>
+
+
+       <!-- Example row of columns -->
+      <div class="row">
+        <div class="span6">
+          <h2><i class="icon-bookmark"></i> Featured</h2>
+          <p>
+          <dl>
+          {%  for link in featured_links %}
+           <dt><a href="{{link.get_absolute_url}}">{{link.title}}</a></dt>
+           <dd>{{link.description|truncatewords:7}}</dd>
+          {% endfor %}
+           </dl>
+           </p>
+        </div>
+        <div class="span5">
+          <h2><i class="icon-bookmark"></i> Random</h2>
+          <p>
+          <dl>
+          {%  for link in random_links %}
+           <dt><a href="{{link.get_absolute_url}}">{{link.title}}</a></dt>
+           <dd>{{link.description|truncatewords:7}}</dd>
+          {% endfor %}
+           </dl>
+           </p>
+
+       </div>
+        <div class="span5">
+          <h2> <i class="icon-bookmark"></i> Latest</h2>
+          <p>
+          <dl>
+          {%  for link in latest_links %}
+           <dt><a href="{{link.get_absolute_url}}">{{link.title}}</a></dt>
+           <dd>{{link.description|truncatewords:7}}</dd>
+          {% endfor %}
+           </dl>
+           </p>
+
+        </div>
+      </div>
+
+
+{% endblock %}

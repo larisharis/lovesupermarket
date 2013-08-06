@@ -1,0 +1,72 @@
+.icon-facebook{
+background: url(../img/facebook.png) no-repeat;
+width:14px;
+height:14px;
+background-position:center;
+}
+.icon-twitter{
+background: url(../img/icon-twitter.png) no-repeat;
+width:14px;
+height:14px;
+background-position:center;
+}
+.icon-twitter-t{
+background: url(../img/twitter-t.png) no-repeat;
+width:14px;
+height:14px;
+background-position:center;
+}
+.icon-rss{
+background: url(../img/rss.png) no-repeat;
+width:14px;
+height:14px;
+background-position:center;
+}
+.featured > td {
+background-color:#EDF7FF !important;
+}
+.icon-login-facebook{
+background: url(../images/facebook.png) no-repeat;
+}
+.icon-login-google{
+background: url(../images/google.png) no-repeat;
+}
+.icon-login-github{
+background: url(../images/github.png) no-repeat;
+}
+.icon-login-twitter{
+background: url(../images/twitter.png) no-repeat;
+}
+
+[class^="icon-login"]{
+border-radius: 5px;
+margin-left:5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+box-shadow: 2px 2px 4px #ddd;
+-moz-box-shadow: 2px 2px 4px #ddd;
+-webkit-box-shadow: 2px 2px 4px #ddd;
+height:50px;
+padding:3px;
+width:150px;
+border:1px solid #222;
+background-position:center;
+cursor:pointer;
+}
+.content{
+min-height:500px;
+}
+
+/* Star ratings! */
+.ratings { 
+    background: url(../images/blank.png) transparent 0 0 repeat-x;
+    height: 16px;
+    width: 81px;
+    }
+.ratings div { 
+    background: url(../images/star.png) transparent 0 0 repeat-x; 
+    height: 15px;
+    }
+.ratings span {
+    display: none;
+    }

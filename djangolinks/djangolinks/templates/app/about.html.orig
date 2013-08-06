@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<center>
+<h3>
+{{site_name|capfirst}} is link directory written in python django framework
+</h3>
+</center>
+{% endblock %}

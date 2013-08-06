@@ -1,0 +1,61 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+{{ form.media }}
+
+<form class="form-horizontal" action="." method="post" >
+
+{% csrf_token %}
+
+        <fieldset>
+          <legend>Add a site</legend>
+                      
+	        {% for field in form %}
+              
+
+          <div class="control-group">
+
+                      {{field.label_tag}}
+
+              <div class="controls">
+              {% if field.name == "description" %}
+                      {{field}}
+                <span class="help-inline">{{field.help_text}}</span>
+                <span class="help-block">{{field.errors}}</span>
+              {% endif %}
+
+              {% if field.name == "featured" or field.name == "spotlight" %}
+                <label class="checkbox">
+		<input type="checkbox" name="{{ field.html_name }}" value="{{field.value|default_if_none:""}}">
+                {{field.help_text}}
+                <span class="help-block">{{field.errors}}</span>
+		</label>
+              {% endif %}
+
+              {% if field.name != "description" and field.name != "featured" and field.name != "spotlight" %} 
+
+                <input class="xlarge" id="xlInput" name="{{ field.html_name }}" size="30" type="text" value="{{field.value|default_if_none:""}}">
+                <span class="help-inline">{{field.help_text}}</span>
+                <span class="help-block">{{field.errors}}</span>
+
+              {% endif %}
+              
+
+	  </div>
+
+          </div><!-- /control-group -->
+
+	{% endfor %}
+
+        </fieldset>
+
+<div class="form-actions">
+<i class="icon-shopping-cart icon-white"></i>
+            <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Save changes</button>
+            <button type="reset" class="btn">Cancel</button>
+          </div>
+
+</form>
+
+{% endblock %}
