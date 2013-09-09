@@ -1,0 +1,17 @@
+{% load custom_tags %}
+<div class="breadcrumb" style="padding:0px;">
+<center>
+<div class="pagination" style="margin:-1px;">
+<ul>
+
+{% for page_num in paginator.page_range %}
+  {% ifequal page_num page_obj.number %}
+  <li class="active"><a href="{% append_to_get page=page_num %}">{{ page_num }}</a></li> 
+  {% else %}
+  <li><a href="{% append_to_get page=page_num %}">{{ page_num }}</a></li> 
+  {% endifequal %}
+{% endfor %}
+</ul>
+      </div>
+</center>
+</div>

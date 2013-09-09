@@ -1,0 +1,39 @@
+{% extends 'app/sidebar_base.html'%}
+
+{%block sidebar_content %}
+
+        <ul class="nav nav-list">
+          <li class="nav-header">Menu</li>
+          <li><a href="/"><i class="icon-home"></i> Home</a></li>
+          <li class="active"><a href="/list"><i class="icon-white icon-book"></i> All Links</a></li>
+          <li><a href="/submit"><i class="icon-plus"></i> Submit Link</a></li>
+<br>
+
+          <li class="nav-header">Search</li>
+           <form method="get" action="/search">
+             <fieldset>
+             
+             <div class="clearfix">
+             <input class="input-small" name="q" type="text" placeholder="Keywords">
+             </div>
+             
+             <div class="clearfix">
+             <input class="input-small" name="tags" type="text" placeholder="Tags">
+             </div>
+             
+             <div class="clearfix">
+             <span class="help-block">Free</span>
+             <br>
+             <select name="free" class="span1" style="width: 100px;">
+                <option selected>All</option>
+                <option>Yes</option>
+                <option>No</option>
+             </select>            
+             </div>
+             
+             </fieldset>
+             <button class="btn" type="submit">Search</button>
+            </form>
+</ul>
+
+{% endblock%}

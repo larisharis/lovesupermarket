@@ -1,0 +1,138 @@
+{% load tagging_tags %}
+{% load static %}
+
+{% load dajaxice_templatetags %}
+{% load hitcount_tags %}
+
+{% block head%}
+    {% dajaxice_js_import %}
+
+<script src="{% get_static_prefix %}js/jquery.js"></script>
+<script src="{% get_static_prefix %}js/bootstrap-tooltip.js"></script>
+
+
+<script>
+!function( $ ){
+        $(function () {
+                        $('a[rel=tooltip]').tooltip();
+                });
+}( window.jQuery )
+</script>
+
+
+{% endblock %}
+
+<script type="text/javascript" charset="utf-8">
+        function my_callback(data){
+            document.getElementById("favorite").setAttribute("class", data.message);
+        }
+        function my_callback_vote(data){
+            var link_id= data.message.split(":")[3];
+
+            document.getElementById("vote_up_"+link_id).setAttribute("class", data.message.split(":")[1]);
+            document.getElementById("vote_down_"+link_id).setAttribute("class", data.message.split(":")[0]);
+
+            var total_votes = document.getElementById("total_votes"+"_"+link_id);
+
+            if("textContent" in total_votes) {
+               total_votes.textContent = data.message.split(":")[2];
+              }
+            else {
+              total_votes.innerText = data.message.split(":")[2];
+            }
+        }
+</script>
+
+
+<table class="table table-striped">
+
+        {% for link in result %}
+        
+        {% tags_for_object link.object as tag_list %}
+
+            {% if link.object.featured %}
+            <tr class="featured">
+            {% else %}
+            <tr>
+            {% endif %}
+			<td style="width:60px;padding-top:9px"><img src="{{link.object.logo|default_if_none:"http://placehold.it/60x60"}}"/></td>
+            <td style="width:10px;">
+             <ul class="unstyled">
+
+{% if request.user.is_authenticated %}
+
+<a title="Vote Up" style="margin-left:6px;margin-top:6px;cursor:pointer;">
+<i "{% if is_up_voted_link_of_user %} class="icon-remove" {% else %} class="icon-chevron-up" {% endif %} id="vote_up_{{link.object.id}}" name="vote_up" onclick="Dajaxice.app.dajaxice_vote(my_callback_vote, {'link':'{{link.object.id}}','direction':'1',})"></i>
+</a>
+
+<li><a id="total_votes_{{link.object.id}}" class="btn btn-small disabled">{{link.total_votes}}</a></li>
+
+<a title="Vote Down" style="margin-left:6px;margin-top:6px;cursor:pointer;">
+<i {% if is_down_voted_link_of_user %} class="icon-remove" {% else %} class="icon-chevron-down" {% endif %} id="vote_down_{{link.object.id}}" name="vote_down" onclick="Dajaxice.app.dajaxice_vote(my_callback_vote, {'link':'{{link.object.id}}','direction':'-1',})"></i>
+</a>
+
+{% else %}
+
+<a title="Please Login" style="margin-left:6px;margin-top:6px;cursor:hand;" rel="tooltip" href="{% url login %}">
+<i class="icon-chevron-up" id="vote_up_anonymous"></i>
+</a>
+<li><a id="total_votes" class="btn btn-small disabled">{{link.total_votes}}</a></li>
+<a title="Please Login" style="margin-left:6px;margin-top:6px;cursor:hand;" rel="tooltip" href="{% url login %}">
+<i class="icon-chevron-down" id="vote_down_anonymous"></i>
+</a>
+
+{% endif %}
+
+
+
+
+               </ul>
+              </td>
+
+
+            <td style="width:390px;">
+            <ul class="unstyled">
+            <li><a href="{% url detail link.title|slugify link.object.id %}">{{link.title}}</a></li>
+            <li class="reset"></li>
+            <li>{{ link.object.description|truncatewords:7}}</li>
+            <li>
+            {% for t in  tag_list %}
+                <a href="/tag/{{t.name|slugify }}" title="{{t.name}}">
+            <span class="label" style="margin:2px;">
+                {{t.name}}
+            </span>
+                </a>
+            {% endfor %}
+            </li>
+
+        </ul>
+        
+        
+        
+                    <td>
+			<ul class="unstyled">
+			<li class="pull-right"> {{link.object.creation|timesince}} ago</li>
+			<li><span>1 Month Price:</span> {{link.object.one_month_price|default_if_none:"-"}}</li>
+			<li class="pull-right"><div class="ratings"><div style="width:{% widthratio link.object.editor_rating|default_if_none:0 1 20 %}%"></div></div</li>	
+			<li><span>2 Month Price:</span> {{link.object.two_month_price|default_if_none:"-"}}</li>
+			<li class="pull-right"><span>Free:</span> {{link.free}}</li>
+			<li><span>3 Month Price:</span> {{link.object.three_month_price|default_if_none:"-"}}</li>
+			<li class="pull-right"><span>Free Trial:</span> {{link.object.free_trial|yesno:"Yes,No,-"}}</li>
+			<li><span>Hit Count:</span> {% get_hit_count for link.object %}</li>
+			</ul>
+			</td>
+        
+        
+        
+        
+            </td></tr>
+
+
+
+        {% empty %}
+         <p>No Results Found</p>
+        {% endfor %}
+    </ul>
+
+
+</table>

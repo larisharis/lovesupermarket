@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tagging_tags %}
+{% load hitcount_tags %}
+{% load dajaxice_templatetags %}
+{% load disqus_tags %}
+
+{% block head%}
+
+  <title>{{link.title|capfirst}}</title>
+  
+    {% dajaxice_js_import %}
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="{% get_static_prefix %}js/bootstrap-tooltip.js"></script>
+
+<script type="text/javascript">
+$(document).ajaxSend(function(event, xhr, settings) {
+  function getCookie(name) {
+    var cookieValue = null;
+
+    if (document.cookie && document.cookie != '') {
+      var cookies = document.cookie.split(';');
+
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+
+    return cookieValue;
+  }
+
+  function sameOrigin(url) {
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host;
+    // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+           (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+           // or any other URL that isn't scheme relative or absolute i.e relative.
+           !(/^(\/\/|http:|https:).*/.test(url));
+  }
+
+  function safeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+
+  if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+  }
+}); 
+
+
+
+
+</script>
+
+
+
+  <script>
+!function( $ ){
+	$(function () {	
+			$('a[rel=tooltip]').tooltip();
+		});
+}( window.jQuery ) 
+  </script>
+  
+<script type="text/javascript">
+    $(document).ready(function() {
+        {% get_hit_count_javascript for link %}
+    });
+</script>
+  
+
+{% endblock %}
+
+{% block sidebar %}
+{% include 'app/detail_sidebar.html' with link=link%}
+{% endblock %}
+
+
+{% block content %}
+{% tags_for_object link as tag_list %}
+<h2>{{link.title}}</h2> 
+<div style="margin-right:10px"class="ratings pull-right" ><div style="width:{% widthratio link.editor_rating|default_if_none:0 1 20 %}%"></div></div>
+<p class="pull-right"><span style="margin-right:10px">Editor Rating    </span> </p>
+<p>posted on {{link.creation|date:"M d"|lower}} by {{link.owner.username}}<p>
+<p>{% get_hit_count for link %} total views<p>
+
+
+<p class="pull-left" style="margin-bottom:-12px;">
+
+{% for t in tag_list %}
+<a href="/tag/{{t.name|slugify }}">
+<span class="label" style="margin:2px;">
+{{t.name}}
+</span>
+</a>
+{% endfor %}
+</p>
+
+<script type="text/javascript" charset="utf-8">
+        function my_callback(data){
+            document.getElementById("favorite").setAttribute("class", data.message);
+        }
+        function my_callback_vote(data){
+            document.getElementById("vote_up").setAttribute("class", data.message.split(":")[1]);
+            document.getElementById("vote_down").setAttribute("class", data.message.split(":")[0]);
+
+            var total_votes = document.getElementById("total_votes");
+            if("textContent" in total_votes) {
+               total_votes.textContent = data.message.split(":")[2];
+              }
+            else {
+              total_votes.innerText = data.message.split(":")[2];
+            }
+        }
+</script>
+
+<div class="btn-group btn-small  pull-right" >
+
+
+{% if request.user.is_authenticated %}
+
+<a class="btn" href="#" title="Vote Down">
+<i {% if is_down_voted_link_of_user %} class="icon-remove" {% else %} class="icon-chevron-down" {% endif %} id="vote_down" name="vote_down" onclick="Dajaxice.app.dajaxice_vote(my_callback_vote, {'link':'{{link.id}}','direction':'-1',})"></i>
+</a>
+
+<a class="btn" href="#"  title="Add Favorite">
+<i name="favorite" id="favorite" {% if is_favorite_link_of_user %} class="icon-star" {% else %} class="icon-star-empty" {% endif %}  onclick="Dajaxice.app.dajaxice_favorite(my_callback, {'link':'{{link.id}}'})"></i>
+</a>
+
+<a class="btn" href="#" title="Vote Up">
+<i {% if is_up_voted_link_of_user %} class="icon-remove" {% else %} class="icon-chevron-up" {% endif %} id="vote_up" name="vote_up" onclick="Dajaxice.app.dajaxice_vote(my_callback_vote, {'link':'{{link.id}}','direction':'1',})"></i>
+</a>
+
+{% else %}
+
+
+<a href="{% url login %}" class="btn" id="ex" rel="tooltip" title="Please Login"><i class="icon-chevron-down" id="vote_down_anonymous"></i></a>
+<a href="{% url login %}" class="btn" rel="tooltip" title="Please Login"><i name="favorite" id="favorite_anonymous" class="icon-star-empty" title="Please Login"></i></a>
+<a href="{% url login %}" class="btn" rel="tooltip" title="Please Login"><i class="icon-chevron-up" id="vote_up_anonymous"></i></a>
+
+{% endif %}
+
+
+
+
+</div>
+
+<table class="table table-striped table-bordered table-condensed">
+            <tr><td style="padding:15px;">
+    	<ul class="unstyled">
+    	    <li class="pull-right"><img src="{{link.logo|default_if_none:"http://placehold.it/60x60"}}"/></li>
+            <li><strong>ID: </strong>{{link.id}}</li>
+            <li><strong>Title: </strong><a target="_blank" href="{{ link.url }}">{{ link.title }}</a></li>
+            <li><strong>Url: </strong>{{ link.url }}</li>
+            <li><strong>Description: </strong>{{ link.description }}</li>
+            <li><strong>Total Votes: </strong><span id="total_votes">{{ link.total_votes }}</span></li>
+            <li><strong>Free: </strong>{{ link.free|yesno:"Yes,No,-"}}</li>
+            <li><strong>Free Trial: </strong>{{ link.free_trial|yesno:"Yes,No,-"}}</li>
+            <li><strong>1 Month Price: </strong>{{ link.one_month_price|default_if_none:"-"}}</li>
+            <li><strong>2 Month Price: </strong>{{ link.two_month_price|default_if_none:"-" }}</li>
+            <li><strong>3 Month Price: </strong>{{ link.three_month_price|default_if_none:"-" }}</li>
+ 		</ul>
+            </td></tr>
+    </ul>
+    
+    <tr>
+    <td>
+    
+    {% disqus_show_comments %}
+    
+    </td>
+    </tr>
+</table>
+
+
+
+
+{% endblock %}

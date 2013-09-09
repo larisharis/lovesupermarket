@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+     {% include 'app/list_sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+
+<h2>Links</h2>
+
+<script>
+
+
+function addParameter(parameter, value)
+{
+   //Get Query String from url
+   fullQString = window.location.search.substring(1);
+   
+   paramCount = 0;
+   queryStringComplete = "?";
+
+   if(fullQString.length > 0)
+   {
+       //Split Query String into separate parameters
+       paramArray = fullQString.split("&");
+       
+       //Loop through params, check if parameter exists.  
+       for (i=0;i<paramArray.length;i++)
+       {
+         currentParameter = paramArray[i].split("=");
+         if(currentParameter[0] == parameter) //Parameter already exists in current url
+         {
+            //don't include existing (will be appended to end of url)
+         }
+         else //Existing unrelated parameter
+         {
+            if(paramCount > 0)
+               queryStringComplete = queryStringComplete + "&";
+           
+            queryStringComplete = queryStringComplete + paramArray[i];
+            paramCount++;
+         }
+       }
+   }
+   
+   //Add/Update query string if required.
+   if(paramCount == 0)
+       queryStringComplete = queryStringComplete + parameter + "=" + value;
+   else
+       queryStringComplete = queryStringComplete + "&" + parameter + "=" + value;
+   
+   window.location = self.location.protocol + '//' + self.location.host + self.location.pathname + queryStringComplete;
+   
+   
+}
+
+</script>
+
+<form id="form" method="get" action=".">
+<ul style="height:22px;" class="breadcrumb">
+
+<li class="active">{{page_obj.paginator.count}} {{page.paginator.count}} Links</li>
+
+<li  class="pull-right">
+<select name="sort" style="margin:-3px 5px; width:150px;" onchange="addParameter('sort',this.options[this.selectedIndex].value);">
+<option value="">Sort</option>
+<option value="d">Date posted</option>
+<option value="t">Link title</option>
+<option value="v">Votes</option>
+</select>
+</li>
+
+</ul>
+
+{% if "/list/" in request.get_full_path or "/favorite/" in request.get_full_path %}
+{% include 'app/links_table.html' with result=object_list request=request  %}
+{% if is_paginated %}
+{% include 'pagination.html' with page_obj=page_obj  paginator=page_obj.paginator request=request  %}
+{% endif %}
+{% endif %}
+
+{% if "/tag/" in request.get_full_path %}
+{% include 'app/links_table.html' with result=page_obj.object_list request=request  %}
+{% if is_paginated %}
+{% include 'pagination.html' with page_obj=page_obj  paginator=paginator request=request  %}
+{% endif %}
+{% endif %}
+
+{% if "/search/?" in request.get_full_path %}
+{% include 'app/links_table_object.html' with result=page.object_list request=request  %}
+{% if paginator.num_pages > 1 %}
+{% include 'pagination.html' with page_obj=page  paginator=page.paginator request=request  %}
+{% endif %}
+{% endif %}
+
+
+</form>
+{% endblock %}

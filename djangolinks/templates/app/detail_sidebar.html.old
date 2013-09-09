@@ -1,0 +1,18 @@
+{% extends 'app/sidebar_base.html'%}
+
+{%block sidebar_content %}
+
+        <ul class="nav nav-list">
+          <li class="nav-header">Menu</li>
+          <li><a href="/"><i class="icon-home"></i> Home</a></li>
+          <li class="active"><a href="/list"><i class="icon-white icon-book"></i> All Links</a></li>
+          <li><a href="/submit"><i class="icon-plus"></i> Submit Link</a></li>
+<br>
+
+      <li class="nav-header">Share</li>
+      <li><a class="mail" href="mailto:?subject={{link.title}}&amp;body={{link.description}}%0A{{site_domain}}{% url detail link.title|slugify link.id %}"><i class="icon-envelope"></i> Email to friend</a></li>
+      <li><a href="http://www.facebook.com/sharer.php?u={{site_domain}}{% url detail link.title|slugify link.id %}&t={{link.title}}"><i class="icon-facebook"></i> Share on facebook</a></li>
+      <li><a class="twitter" href="http://twitter.com/intent/tweet?url={{site_domain}}{% url detail link.title|slugify link.id %}&amp;text={{link.description|slice:":100"}}+(via+{{site_name}})"><i class="icon-twitter-t"></i> Tweet this link</a></li>
+
+</ul>
+{% endblock%}
