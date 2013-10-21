@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% load static %}
 {% load tagging_tags %}
 {% load hitcount_tags %}
@@ -161,7 +162,8 @@ $(document).ajaxSend(function(event, xhr, settings) {
 <table class="table table-striped table-bordered table-condensed">
             <tr><td style="padding:15px;">
     	<ul class="unstyled">
-    	    <li class="pull-right"><img src="{{link.logo|default_if_none:"http://placehold.it/60x60"}}"/></li>
+    	    <li class="pull-right"><img src="{{link.logo.url|default_if_none:"http://placehold.it/120x120"}}"/></li>
+    	    {#<li class="pull-right"><img src="{{link.logo.url|default_if_none:"http://placehold.it/60x60"}}"/></li>#}
             <li><strong>ID: </strong>{{link.id}}</li>
             <li><strong>Title: </strong><a target="_blank" href="{{ link.url }}">{{ link.title }}</a></li>
             <li><strong>Url: </strong>{{ link.url }}</li>

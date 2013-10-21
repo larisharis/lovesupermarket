@@ -52,7 +52,7 @@ class Link(models.Model):
     
     free = models.CharField(_('free'), choices=YESNO,default='No',max_length=3)
     free_trial = models.NullBooleanField(_('free trial'), default=None,null=True,blank=True)
-    logo = models.CharField(_('logo'), max_length=255, default=None,null=True,blank=True)
+    logo = models.ImageField(_('logo'), max_length=255, upload_to='upload/logos/',default=None,null=True,blank=True)
     editor_rating=models.CharField(_('editor rating'),max_length=1, choices=RATINGS,null=True,blank=True)
     one_month_price = models.CharField(_('1 month price'), max_length=50, default=None,null=True,blank=True)
     two_month_price = models.CharField(_('2 month price'), max_length=50, default=None,null=True,blank=True)
